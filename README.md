@@ -1,14 +1,12 @@
-# gatsby-source-graphcms
+# gatsby-source-mesh
 
-[![XO code style](https://img.shields.io/badge/code_style-XO-5ed9c7.svg)](https://github.com/sindresorhus/xo) [![CircleCI](https://img.shields.io/circleci/project/github/GraphCMS/gatsby-source-graphcms.svg)](https://circleci.com/gh/GraphCMS/gatsby-source-graphcms)
+Source plugin for pulling data into [Gatsby](https://github.com/gatsbyjs) from a [Gentics Mesh](https://getmesh.io) endpoint.
 
-Source plugin for pulling data into [Gatsby](https://github.com/gatsbyjs) from a [GraphCMS](https://graphcms.com) endpoint.
-
-#### Example: [@GraphCMS/gatsby-graphcms-example](https://github.com/GraphCMS/gatsby-graphcms-example)
+#### Example: [@gentics/gatsby-mesh-example](https://github.com/gentics/gatsby-mesh-example)
 
 ## Install
 
-1. `yarn add gatsby-source-graphcms` or `npm i gatsby-source-graphcms`
+1. `yarn add gatsby-source-mesh` or `npm i gatsby-source-mesh`
 1. Make sure plugin is referenced in your Gatsby config, as in the
    [example&nbsp;below](#usage)
 1. `gatsby develop`
@@ -16,15 +14,15 @@ Source plugin for pulling data into [Gatsby](https://github.com/gatsbyjs) from a
 ## Testing plugin contributions
 
 1. `cd` to the Gatsby install you want to test your changes to the plugin code
-   with, or clone [@GraphCMS/gatsby-graphcms-example](https://github.com/GraphCMS/gatsby-graphcms-example)
+   with, or clone [@gentics/gatsby-mesh-example](https://github.com/gentics/gatsby-mesh-example)
 1. If you cloned the example or previously installed the plugin through `yarn`
-   or `npm`, `yarn remove gatsby-source-graphcms` or `npm r
-   gatsby-source-graphcms`
+   or `npm`, `yarn remove gatsby-source-mesh` or `npm r
+   gatsby-source-mesh`
 1. `mkdir plugins` if it does not exist yet and `cd` into it
 1. Your path should now be something like
-   `~/code/graphcms/myKillerGatsbySite/plugins/`
-1. `git clone https://github.com/GraphCMS/gatsby-source-graphcms.git`
-1. `cd gatsby-source-graphcms`
+   `~/code/mesh/myKillerGatsbySite/plugins/`
+1. `git clone https://github.com/gentics/gatsby-source-mesh.git`
+1. `cd gatsby-source-mesh`
 1. `yarn` or `yarn && yarn watch` in plugin’s directory for auto-rebuilding the
    plugin after you make changes to it—only during development
 1. Make sure plugin is referenced in your Gatsby config, as in the
@@ -40,58 +38,111 @@ _In your gatsby config..._
 ```javascript
 plugins: [
   {
-    resolve: `gatsby-source-graphcms`,
+    resolve: `gatsby-source-mesh`,
     options: {
       endpoint: `graphql_endpoint`,
       token: `graphql_token`,
       query: `{
-          allArtists {
-            id
-            name
+           nodes {
+            elements {
+              uuid
+              schema {
+                name
+                uuid
+              }
+              parent {
+                uuid
+              }
+              children {
+                elements {
+                  uuid
+                }
+              }
+              path
+              fields {
+                ... on vehicle {
+                  name
+                  description
+                  vehicleImage {
+                    uuid
+                    path
+                    fields {
+                      ... on vehicleImage {
+                        image {
+                          width
+                          height
+                        }
+                      }
+                    }
+                  }
+                }
+                ... on category {
+                  name
+                  slug
+                  description
+                }
+                ... on vehicleImage {
+                  name
+                  image {
+                    fileName
+                    width
+                    height
+                  }
+                }
+              }
+            }
           }
-      }`,
+        }`,
     },
   }
 ],
 ```
 
-Gatsby’s data processing layer begins with “source” plugins, configured in `gatsby-config.js`. Here the site sources its data from the GraphCMS endpoint. Use an `.env` file or set environment variables directly to access the GraphCMS
-endpoint and token. This avoids committing potentially sensitive data.
+Gatsby’s data processing layer begins with “source” plugins, configured in `gatsby-config.js`. 
+Here the site sources its data from the Gentics Mesh endpoint. 
+Use an `.env` file or set environment variables directly to access the Gentics Mesh endpoint and token. 
+This avoids committing potentially sensitive data.
 
 ## Plugin options
 
-|              |                                                          |
-| -----------: | :------------------------------------------------------- |
-| **endpoint** | indicates the endpoint to use for the graphql connection |
-|    **token** | The API access token. Optional if the endpoint is public |
-|    **query** | The GraphQL query to execute against the endpoint        |
+|              |                                                                   |
+| -----------: | :---------------------------------------------------------------- |
+| **endpoint** | Indicates the endpoint to use for the graphql connection. The graphql URL will also be used to select your project. Example: https://demo.getmesh.io/api/v1/demo/graphql  |
+|    **token** | The API access token. By default the anonoymous user will be used. |
+|    **query** | The GraphQL query to execute against the endpoint. The parent/children properties should always be added otherwise the relationships between the nodes can't be created. Currently only agreggation fields (nodes, users, roles...) can be used.|
 
 ## How to query : GraphQL
 
-Let’s say you have a GraphQL type called `Artist`. You would query all artists
-like so:
+This source plugin will load all nodes of Gentics Mesh and transform them into gatsby nodes. If you want to load specific fields of a node you need to adapt the query within your `gatsby-config.js` and include the fields.
 
-```graphql
+## Current limitations
+
+### No support for specific elements ###
+
+Only aggregation fields can be selected. Specifying a specific node in the gatsby-config is not yet possible.
+
+### Multilanguage support ###
+
+Mutlilanguage support has not yet been tested.
+
+You can however load all language variants of a node this way:
+
+```
 {
-  allArtists {
-    id
-    name
-    slug
-    picture {
-      id
-      url
-      height
-      width
-    }
-    records {
-      id
-      title
+  nodes {
+    elements {
+      uuid
+      languages {
+        fields {
+          ... on vehicle {
+            slug
+          }
+        }
+      }
     }
   }
 }
 ```
-
-## Current limitations
 
 #### `length` must be aliased
 
@@ -99,62 +150,11 @@ If you have a field named `length` it must be aliased to something else like so:
 `myLength: length`. This is due to internal limitations of Gatsby’s GraphQL
 implementation.
 
-#### Does not support over 1000 records per `__type`
-
-A way to automatically paginate and fetch all data is being worked on, but this is a limitation on the [graph.cool](https://www.graph.cool) backend. See [Graphcool Forum — Query without pagination limits](https://www.graph.cool/forum/t/query-without-pagination-limits/845) and [Graphcool Docs — Query API — Pagination](https://www.graph.cool/docs/reference/graphql-api/query-api-nia9nushae/#pagination)
-
-> Limitations Note that a maximum of 1000 nodes can be returned per pagination
-> field. If you need to query more nodes than that, you can use first and skip
-> to seek through the different pages. You can also include multiple versions of
-> the same field with different pagination parameter in one query using GraphQL
-> Aliases.
-
-#### Does not support automatic __meta count association
-
-Related to pagination and 1K limitation, if you want to show an accurate total count of the result set without wanting to aggregate on the client side, especially with large sets, you might want to use the auto-generated meta fields with `count`. A way to automatically extract the meta fields from query and use `createNodeFields` to add the meta fields to their corresponding nodes is being worked on.
-
-If in the config query:
-
-```
-allArticles {
-  id
-}
-__allArticlesMeta {
-  count
-}
-```
-
-We would instead move the `_allArticlesMeta` inside `allArticles` (as we don’t need nor want any nodes from meta fields) and then query the total articles count like so in the page level:
-
-```
-allArticles {
-  __meta {
-    count
-  }
-}
-```
-
-For now we advise using `this.props.data.articles.edges.length` instead because Gatsby tries to create nodes out of top level fields which does not make sense in this case, bearing in mind pagination limitations described above.
-
-#### Does not support localization
-
-[GraphCMS recently implemented localization](https://graphcms.com/blog/introducing-content-localization), which provides an interesting challenge for the plugin. Work in Gatsby on “[GeoIP and Language-based redirects](https://github.com/gatsbyjs/gatsby/pull/2890)” is ongoing with some really nice [extras for those who host with Netlify](https://www.netlify.com/docs/redirects/#geoip-and-language-based-redirects).
-
-## Discussion
-
-All of the aforementioned limitations are under active discussion and development in the Gatsby channel on the GraphCMS Slack group. [Join us!](https://slack.graphcms.com/)
-
 ## Other TODOs
 
-1. Implement support for relationships/embedded fields
-1. Implement mapping feature for transformation plugins, like [the MongoDB plugin](https://www.gatsbyjs.org/packages/gatsby-source-mongodb/#mapping-mediatype-feature)
-1. Explore schema stitching — [Apollo GraphQL Tools Docs](https://www.apollographql.com/docs/graphql-tools/schema-stitching.html), [blog post](https://dev-blog.apollodata.com/graphql-schema-stitching-8af23354ac37) — and [graphql-tools](https://github.com/apollographql/graphql-tools)
+* Add support for non-aggregation fields
+* Add better multilanguage handling
 
-## Contributors
+## Fork
 
-* [@redmega](https://github.com/redmega) Angel Piscola
-* [@rafacm](https://github.com/rafacm) Rafael Cordones
-* [@hmeissner](https://github.com/hmeissner) Hugo Meissner
-* [@rdela](https://github.com/rdela) Ricky de Laveaga
-
-…[and you](https://github.com/GraphCMS/gatsby-source-graphcms/issues)?
+This source plugin is a modified fork of the [gatsby-source-graphcms plugin](https://github.com/GraphCMS/gatsby-source-graphcms).

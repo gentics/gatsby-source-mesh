@@ -12,7 +12,6 @@ exports.sourceNodes = async (
   {endpoint, token, query}
 ) => {
   if (query) {
-    const {createNode} = boundActionCreators;
 
     const clientOptions = {
       headers: {
@@ -26,15 +25,15 @@ exports.sourceNodes = async (
 
     // Keywords workaround
     if (checkForFaultyFields(userQueryResult)) {
-      reporter.panic(`gatsby-source-graphcms: ${keywordsError}`);
+      reporter.panic(`gatsby-source-mesh: ${keywordsError}`);
     }
 
     if (DEBUG_MODE) {
       const jsonUserQueryResult = JSON.stringify(userQueryResult, undefined, 2);
-      console.log(`\ngatsby-source-graphcms: GraphQL query results: ${jsonUserQueryResult}`);
+      console.log(`\ngatsby-source-mesh: GraphQL query results: ${jsonUserQueryResult}`);
     }
-    forEachObjIndexed(createNodes(createNode, reporter), userQueryResult);
+    forEachObjIndexed(createNodes(boundActionCreators, reporter), userQueryResult);
   } else {
-    reporter.panic(`gatsby-source-graphcms: you need to provide a GraphQL query in the plugin 'query' parameter`);
+    reporter.panic(`gatsby-source-mesh: you need to provide a GraphQL query in the plugin 'query' parameter`);
   }
 };

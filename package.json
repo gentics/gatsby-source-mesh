@@ -1,22 +1,22 @@
 {
   "version": "0.0.1",
-  "name": "gatsby-source-graphcms",
-  "description": "Gatsby source plugin for building websites using the GraphCMS as a data source.",
+  "name": "gatsby-source-mesh",
+  "description": "Gatsby source plugin for building websites using the headless CMS Gentics Mesh as a data source.",
   "keywords": [
     "data",
     "gatsby",
     "gatsby-plugin",
-    "graphcms",
+    "genticsmesh",
     "graphql",
     "source"
   ],
-  "homepage": "https://github.com/GraphCMS/gatsby-source-graphcms",
+  "homepage": "https://github.com/gentics/gatsby-source-mesh",
   "repository": {
     "type": "git",
-    "url": "https://github.com/GraphCMS/gatsby-source-graphcms.git"
+    "url": "https://github.com/gentics/gatsby-source-mesh.git"
   },
   "bugs": {
-    "url": "https://github.com/GraphCMS/gatsby-source-graphcms/issues"
+    "url": "https://github.com/GraphCMS/gatsby-source-mesh/issues"
   },
   "license": "MIT",
   "author": "Angel Piscola <angelpiscola@gmail.com>",
