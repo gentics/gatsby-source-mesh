@@ -19,7 +19,7 @@
     "url": "https://github.com/GraphCMS/gatsby-source-mesh/issues"
   },
   "license": "MIT",
-  "author": "Angel Piscola <angelpiscola@gmail.com>",
+  "author": "Johannes Schüth <j.schueth@gentics.com>",
   "deprecated": false,
   "main": "index.js",
   "scripts": {
