@@ -117,6 +117,22 @@ This source plugin will load all nodes of Gentics Mesh and transform them into g
 
 ## Current limitations
 
+### No automatic paging ###
+
+The aggregation results will not be automatically be paged and thus only the specified amount of elements will be loaded. (default: 25)
+
+You can however increase the page size this way:
+
+```
+{
+  nodes(perPage: 1000) {
+    elements {
+      uuid
+    }
+  }
+}
+```
+
 ### No support for specific elements ###
 
 Only aggregation fields can be selected. Specifying a specific node in the gatsby-config is not yet possible.
