@@ -43,6 +43,10 @@ plugins: [
       endpoint: `graphql_endpoint`,
       token: `graphql_token`,
       query: `{
+           me {
+             uuid
+             username
+           }
            nodes {
             elements {
               uuid
@@ -99,7 +103,7 @@ plugins: [
 ```
 
 Gatsby’s data processing layer begins with “source” plugins, configured in `gatsby-config.js`. 
-Here the site sources its data from the Gentics Mesh endpoint. 
+Here the site sources its data from the Gentics Mesh endpoint.
 Use an `.env` file or set environment variables directly to access the Gentics Mesh endpoint and token. 
 This avoids committing potentially sensitive data.
 
@@ -132,10 +136,6 @@ You can however increase the page size this way:
   }
 }
 ```
-
-### No support for specific elements ###
-
-Only aggregation fields can be selected. Specifying a specific node in the gatsby-config is not yet possible.
 
 ### Multilanguage support ###
 
