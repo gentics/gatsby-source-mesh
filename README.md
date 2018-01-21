@@ -168,7 +168,6 @@ implementation.
 
 ## Other TODOs
 
-* Add support for non-aggregation fields
 * Add better multilanguage handling
 
 ## Fork
