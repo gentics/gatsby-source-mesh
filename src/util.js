@@ -1,6 +1,5 @@
 import crypto from 'crypto';
 import {compose, join, pluck, map, path, forEach} from 'ramda';
-import {singular} from 'pluralize';
 import {SOURCE_NAME, DEBUG_MODE} from './constants';
 
 // Get the type name back from a formatted type name.
@@ -48,7 +47,7 @@ export const constructChildIds = (e, type) => {
  * @param {*} type 
  */
 export const createId = (uuid, type) => {
-  return crypto.createHash(`md5`).update(uuid + ":" + type).digest(`hex`)
+  return crypto.createHash(`md5`).update(uuid + ":" + type).digest(`hex`);
 };
 
 /**
