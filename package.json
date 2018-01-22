@@ -1,6 +1,6 @@
 {
-  "version": "0.0.2",
-  "name": "gatsby-source-mesh",
+  "version": "0.0.3",
+  "name": "@gentics/gatsby-source-mesh",
   "description": "Gatsby source plugin for building websites using the headless CMS Gentics Mesh as a data source.",
   "keywords": [
     "data",
