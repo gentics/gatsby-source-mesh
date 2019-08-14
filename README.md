@@ -1,8 +1,12 @@
+# Project Deprecated
+
+Use https://www.gatsbyjs.org/packages/gatsby-source-graphql/ instead.
+
+#### Example: [@gentics/gatsby-mesh-example](https://github.com/gentics/gatsby-mesh-example)
+
 # gatsby-source-mesh
 
 Source plugin for pulling data into [Gatsby](https://github.com/gatsbyjs) from a [Gentics Mesh](https://getmesh.io) endpoint.
-
-#### Example: [@gentics/gatsby-mesh-example](https://github.com/gentics/gatsby-mesh-example)
 
 ## Install
 
